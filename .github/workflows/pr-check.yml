@@ -15,7 +15,7 @@ jobs:
         include:
           - node-version: 25
             experimental: true
-    continue-on-error: ${{ matrix.experimental == true }}
+    continue-on-error: false
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
