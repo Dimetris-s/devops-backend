@@ -35,11 +35,11 @@ jobs:
           DEPLOY="${{ needs.deploy.result }}"
 
           if [ "$CHECKS" != "success" ]; then
-            TEXT="❌ Тесты упали%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            TEXT="❌ Тесты упали%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} | author: ${{ github.actor }}"
           elif [ "$DEPLOY" != "success" ]; then
-            TEXT="❌ Деплой упал%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            TEXT="❌ Деплой упал%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} | author: ${{ github.actor }}"
           else
-            TEXT="✅ Деплой успешен%0A${{ github.repository }} @ ${{ github.ref_name }}"
+            TEXT="✅ Деплой успешен%0A${{ github.repository }} @ ${{ github.ref_name }} | author: ${{ github.actor }}"
           fi
 
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
