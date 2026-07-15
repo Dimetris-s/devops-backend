@@ -2,6 +2,21 @@ name: Notify
 
 on:
   workflow_call:
+    inputs:
+      deploy_result:
+        required: true
+        type: string
+      build_result:
+        required: true
+        type: string
+      checks_result:
+        required: true
+        type: string
+    secrets:
+      TELEGRAM_BOT_TOKEN:
+        required: true
+      TELEGRAM_CHAT_ID:
+        required: true
 
 jobs:
   notify:
@@ -9,13 +24,16 @@ jobs:
     steps:
       - name: Notify via Telegram
         run: |
-          CHECKS="${{ needs.checks.result }}"
-          DEPLOY="${{ needs.deploy.result }}"
+          CHECKS="${{ inputs.checks_result }}"
+          DEPLOY="${{ inputs.deploy_result }}"
+          BUILD="${{ inputs.build_result }}"
 
           if [ "$CHECKS" != "success" ]; then
             TEXT="❌ Тесты упали%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} | author: ${{ github.actor }}"
           elif [ "$DEPLOY" != "success" ]; then
             TEXT="❌ Деплой упал%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} | author: ${{ github.actor }}"
+          elif [ "$BUILD" != "success" ]; then
+            TEXT="❌ Билд упал%0A${{ github.repository }} @ ${{ github.ref_name }}%0AСмотри: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} | author: ${{ github.actor }}"
           else
             TEXT="✅ Деплой успешен%0A${{ github.repository }} @ ${{ github.ref_name }} | author: ${{ github.actor }}"
           fi
