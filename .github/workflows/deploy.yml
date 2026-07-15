@@ -28,7 +28,7 @@ jobs:
           docker push $IMAGE_LATEST
           echo "image_sha=$IMAGE_SHA" >> $GITHUB_OUTPUT
   deploy:
-    needs: checks
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Deploy via SSH
