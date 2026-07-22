@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { MetricsModule } from './metrics.module';
+import { MetricsMiddleware } from './metrics/metrics.middleware';
 
 @Module({
   imports: [
@@ -21,4 +22,8 @@ import { MetricsModule } from './metrics.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(MetricsMiddleware).exclude('metrics').forRoutes('*');
+  }
+}
