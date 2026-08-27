@@ -27,3 +27,5 @@ Thumbs.db
 # Test coverage
 coverage/
 *secret.yaml
+deployment/secret.yml
+deployment/docker -secret.yml
