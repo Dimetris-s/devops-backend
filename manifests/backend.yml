@@ -16,7 +16,7 @@ spec:
         - name: dockerhub-cred
       containers:
         - name: backend-api
-          image: dim3triss/backend:sha-7cb2fdd5f70f9ecc11af95e0e654f4757e61bab9
+          image: dim3triss/backend:sha-70dfa24c192c1a7081faf52bbc7388dcd26c3659
           ports:
             - containerPort: 3000
           envFrom:
@@ -24,3 +24,15 @@ spec:
                 name: backend-config
             - secretRef:
                 name: backend-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-api-service
+spec:
+  selector:
+    app: backend-api
+  ports:
+    - port: 3000
+      targetPort: 3000
+  type: ClusterIP

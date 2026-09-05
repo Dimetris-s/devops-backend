@@ -28,4 +28,4 @@ Thumbs.db
 coverage/
 *secret.yaml
 deployment/secret.yml
-deployment/docker -secret.yml
+manifests/docker-secret.yml

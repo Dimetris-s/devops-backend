@@ -1,7 +1,8 @@
-name: Deploy
+name: Deploy k8s
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [main]
 
 jobs:
   checks:
@@ -30,16 +31,14 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /var/www/myapp
-            sed -i 's|BACKEND_IMAGE=.*|BACKEND_IMAGE=${{ needs.build.outputs.image_sha }}|' .env
-            docker compose up -d --no-deps backend
+      - name: Create k8s config
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+      - name: Deploy to k3s
+        run: |
+          kubectl set image deployment/backend-api backend-api=${{ needs.build.outputs.image_sha }}
+          kubectl rollout status deployment/backend-api --timeout=120s
   notify:
     needs: [checks, build, deploy]
     if: always()
